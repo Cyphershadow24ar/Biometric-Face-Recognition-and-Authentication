@@ -1,97 +1,56 @@
-🧠 Machine Learning–Based Biometric Face Recognition & Authentication
-(Decision Tree, Random Forest, AdaBoost, KNN, LDA)
+# 🧠 Machine Learning–Based Biometric Face Recognition & Authentication (Decision Tree, Random Forest, AdaBoost, KNN, LDA)
 
-This repository implements a complete biometric face recognition and authentication system using classical machine learning algorithms. It supports 1:1 verification, 1:N recognition, unknown-person detection, PCA-based feature extraction, threshold calibration, and automatic model persistence.
+This repository implements a complete biometric face recognition and authentication system using classical machine learning algorithms. It supports 1:1 verification, 1:N identification, unknown-person detection, PCA-based feature extraction, and threshold calibration.
 
-The code is fully based on the Python implementation in the file bfra_model.py.
-
+The complete implementation is inside BFRA_model.ipynb, which contains preprocessing, model training, authentication logic, embedding generation, ROC-based threshold tuning, and model saving.
 
 bfra_model
 
-📌 Key Features
+ # 📦 Repository Structure
 
-Multi-model classifier training
+Your repo folder structure (from your screenshot):
 
-Decision Tree
+📁 dataset/             → LFW People dataset (Kaggle link included below)
+📁 saved_models/        → Saved PCA, ML models, embeddings, threshold.json
+📁 venv/                → Local virtual environment (optional to commit)
+📄 BFRA_model.ipynb     → Full training, PCA, authentication & recognition pipeline
+📄 requirements.txt     → Required Python dependencies
 
-Random Forest
+# 📥 Dataset Source (Kaggle)
 
-AdaBoost
+This project uses the LFW People (Labeled Faces in the Wild) dataset:
 
-K-Nearest Neighbors (KNN)
+👉 https://www.kaggle.com/datasets/atulanandjha/lfwpeople
 
-Linear Discriminant Analysis (LDA)
+How to use:
 
-Biometric authentication modes
-✔ 1:1 Face Verification (Cosine similarity)
-✔ 1:N Identification (Best-match search)
-✔ Unknown person detection with threshold score
+Download the dataset ZIP from Kaggle
 
-Face Preprocessing
+Extract it to:
+
+dataset/lfw-deepfunneled/
+
+
+Ensure the structure is:
+
+dataset/
+ └── lfw-deepfunneled/
+      ├── Person1/
+      ├── Person2/
+      └── ...
+
+# 🚀 Features
+🖼️ Preprocessing
 
 Grayscale conversion
 
-64×64 resizing
+64×64 face resizing
 
 Normalization
 
-PCA transformation (Eigenfaces)
+PCA whitening (Eigenfaces, 150 components)
 
-Automatic threshold calibration using ROC curve
-
-Model Saving System
-
-PCA saved as pca_model.pkl
-
-Best ML model as best_model.pkl
-
-Learned embeddings stored in HDF5 (embeddings.h5)
-
-Threshold stored in threshold.json
-
-Complete training pipeline + visualizations
-
-📂 Dataset
-
-The project uses the LFW Deep Funneled dataset.
-
-Steps handled automatically:
-
-Upload .zip
-
-Extract to /dataset/lfw-deepfunneled
-
-Filter persons with ≥ 2 images
-
-Preprocess & flatten faces
-
-🏗️ System Architecture
-
-Below is the architecture that your script auto-generates as a Graphviz diagram:
-
-Dataset → Preprocessing → PCA → ML Classifiers → Trained Model + Embeddings  
-                        ↓                              ↑
-                Input Image → Preprocess → PCA → Similarity Check → Result
-
-
-Trained models + PCA + embeddings are then used for authentication.
-
-🧬 Workflow
-1. Preprocessing
-
-Load images
-
-Convert to grayscale
-
-Resize to 64×64
-
-Normalize and flatten
-
-PCA (150-component Eigenfaces)
-
-2. Classical ML Training
-
-Models trained on PCA feature vectors:
+🤖 ML Models Implemented
 
 Decision Tree
 
@@ -101,32 +60,37 @@ AdaBoost
 
 KNN
 
-LDA (best performer ≈ 27.6%)
+LDA (Best performance in this dataset)
 
-3. Authentication & Recognition
-✅ 1:1 Verification
+🔐 Authentication Modes
+1. 1:1 Verification
 
-Compare PCA embeddings using cosine similarity
+Compares two faces using cosine similarity
+→ If similarity ≥ threshold → Match
 
-If similarity ≥ threshold → Match
+2. 1:N Identification
 
-✅ 1:N Recognition
+Compares user input against all stored embeddings
+→ Best match returned
+→ If score < threshold → Unknown Person
 
-Compare input embedding with all stored person embeddings
+📊 Threshold Calibration
 
-Identify the best match
+ROC curve computation
 
-If score < threshold → Unknown Person
+Optimal threshold selection (TPR − FPR maximization)
 
-4. Threshold Calibration
+💾 Model Saving (Auto-Save)
 
-Compute same-person vs different-person similarities
+Your notebook stores:
 
-Generate ROC curve
+File	Located in	Purpose
+pca_model.pkl	saved_models/	PCA eigenface model
+best_model.pkl	saved_models/	Best ML classifier (fallback RF)
+embeddings.h5	saved_models/	Serialized face embeddings
+threshold.json	saved_models/	Optimal similarity threshold
 
-Choose optimal threshold (TPR–FPR maximization)
-
-📊 Final Model Performance
+# 📊 Model Accuracy Summary
 Model	Accuracy
 LDA	0.276
 Random Forest	0.086
@@ -134,154 +98,73 @@ KNN	0.074
 AdaBoost	0.045
 Decision Tree	0.023
 
-(Values taken directly from the computed output.)
+(Extracted from the notebook output)
 
 
 bfra_model
 
-💾 Saved Model Format
-
-Your script automatically saves:
-
-File	Description
-pca_model.pkl	PCA (Eigenfaces) model
-best_model.pkl	Best ML model (Random Forest fallback)
-threshold.json	Optimal similarity threshold
-embeddings.h5	Compressed face embeddings per person
-
-This allows real-time authentication without retraining.
-
-🚀 Installation
+# ⚙️ Installation
+1. Clone the repository
 git clone https://github.com/<your-username>/<repo-name>.git
 cd <repo-name>
+
+2. Install dependencies
 pip install -r requirements.txt
 
 
-Libraries used:
+(requirements.txt matches your environment)
 
-OpenCV
+# ▶️ Running the System
+Open the main file:
 
-NumPy
+BFRA_model.ipynb
 
-Scikit-learn
+Run the notebook cells in order:
 
-Scikit-image
+✔ Loads dataset
+✔ Preprocesses faces
+✔ Extracts PCA features
+✔ Trains all ML models
+✔ Compares their accuracy
+✔ Generates embeddings
+✔ Saves PCA + models + embeddings
+✔ Provides authentication API
 
-Joblib
-
-Matplotlib
-
-h5py
-
-Graphviz (optional for visualization)
-
-▶️ How to Use
-1. Train Models
-
-Training is already included inside the script:
-
-python bfra_model.py
+# 🔐 Authentication Function
+authenticate_face("dataset/lfw-deepfunneled/Bill_Gates/Bill_Gates_0003.jpg")
 
 
-This will:
-
-load dataset
-
-preprocess images
-
-run PCA
-
-train ML models
-
-compute scores
-
-generate embeddings
-
-save model files
-
-2. Authenticate a Face (Unified System)
-
-Use the function:
-
-authenticate_face("path/to/test.jpg")
-
-
-Output example:
+Output:
 
 ✅ Match Found: Bill_Gates (Similarity: 0.82)
 
-
-Or for unknown:
+Or:
 
 ❌ Unknown Person (Similarity: 0.42)
 
-🖼️ Architecture Diagram
 
-Your script auto-generates a high-quality Graphviz PNG file:
+# 🏗️ System Architecture
+
+Your notebook auto-generates a Graphviz PNG diagram:
 
 system_architecture_detailed.png
 
-📜 MIT License
 
-This project is licensed under the MIT License.
+Pipeline:
+
+Dataset → Preprocessing → PCA → ML Classifiers → Saved Model & Embeddings
+                       ↓                                 ↑
+                Input Image → Preprocess → PCA → Similarity → Result
+
+# 📜 License – MIT
+
+Your project is released under the MIT License.
 
 MIT License
 
 Copyright (c) 2025 Aniket
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
-of the Software, and to permit persons to whom the Software is furnished to do so,
-subject to the following conditions:
+of this software and associated documentation files…
 
-(Full MIT license text here... you can copy from MIT template)
-
-
-<p align="center">
-
-  <!-- Project Title -->
-  <h2>🧠 Biometric Face Recognition & Authentication (ML + PCA)</h2>
-
-  <!-- Main Badges -->
-  <img src="https://img.shields.io/badge/Status-Active-brightgreen?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/Python-3.10+-blue?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/Notebook-Jupyter-orange?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/Dataset-LFW%20(Kaggle)-blueviolet?style=for-the-badge" />
-
-  <!-- ML Models -->
-  <img src="https://img.shields.io/badge/Decision%20Tree-Classifier-forestgreen?style=flat-square" />
-  <img src="https://img.shields.io/badge/Random%20Forest-Classifier-darkgreen?style=flat-square" />
-  <img src="https://img.shields.io/badge/AdaBoost-Classifier-red?style=flat-square" />
-  <img src="https://img.shields.io/badge/KNN-Classifier-blue?style=flat-square" />
-  <img src="https://img.shields.io/badge/LDA-Linear%20Discriminant-purple?style=flat-square" />
-
-  <!-- Libraries -->
-  <img src="https://img.shields.io/badge/OpenCV-4.x-critical?style=flat-square&logo=opencv&logoColor=white" />
-  <img src="https://img.shields.io/badge/Scikit--Learn-ML-yellowgreen?style=flat-square&logo=scikitlearn&logoColor=white" />
-  <img src="https://img.shields.io/badge/Numpy-Array%20Ops-informational?style=flat-square&logo=numpy&logoColor=white" />
-  <img src="https://img.shields.io/badge/Matplotlib-Visualization-%23d97706?style=flat-square&logo=python&logoColor=white" />
-  <img src="https://img.shields.io/badge/Joblib-Model%20Saving-%23007ec6?style=flat-square" />
-  <img src="https://img.shields.io/badge/HDF5-Embeddings-%23000099?style=flat-square" />
-
-</p>
-
-![MIT License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
-![Python](https://img.shields.io/badge/Python-3.10+-blue?style=for-the-badge)
-![Jupyter](https://img.shields.io/badge/Jupyter-Notebook-orange?style=for-the-badge)
-![Dataset](https://img.shields.io/badge/Dataset-LFW%20(Kaggle)-purple?style=for-the-badge)
-
-<img src="https://img.shields.io/badge/Face%20Recognition-ML%20Pipeline-ff7b00?style=for-the-badge&logo=python&logoColor=white"/>
-<img src="https://img.shields.io/badge/PCA-Eigenfaces-6f42c1?style=for-the-badge"/>
-<img src="https://img.shields.io/badge/1:1%20Verification-Cosine%20Similarity-0fa3b1?style=for-the-badge"/>
-<img src="https://img.shields.io/badge/1:N%20Identification-Embeddings-3c096c?style=for-the-badge"/>
-
-🙌 Acknowledgements
-
-LFW Dataset
-
-Scikit-learn community
-
-OpenCV contributors
+(Include the full MIT license text here)
