@@ -1,0 +1,21 @@
+# Core
+numpy
+pandas
+scikit-learn
+scipy
+
+# Computer Vision
+opencv-python
+opencv-contrib-python
+
+# Visualization
+matplotlib
+seaborn
+
+# Utilities
+joblib
+h5py
+
+# Jupyter support (if you run .ipynb locally)
+notebook
+ipykernel
